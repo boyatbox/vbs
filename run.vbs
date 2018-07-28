@@ -1,8 +1,8 @@
 Dim objStepDefFile
 Sub RegExMatch()
 
-strFeatureFilePath = "F:\Muntasir\BDD_UFT\Features\test1.feature"
-strStepDefFilePath = "F:\Muntasir\BDD_UFT\StepDefinitions\StepDef.txt"
+strFeatureFilePath = "F:\BDD_UFT\Features\test1.feature"
+strStepDefFilePath = "F:\BDD_UFT\StepDefinitions\StepDef.txt"
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 
 
