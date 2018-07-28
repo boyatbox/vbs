@@ -1,40 +1,37 @@
 Dim objStepDefFile
 Sub RegExMatch()
 
-strFeatureFilePath = "F:\BDD_UFT\Features\test1.feature"
-strStepDefFilePath = "F:\BDD_UFT\StepDefinitions\StepDef.txt"
+strFeatureFilePath = "C:\Users\PC\Desktop\Github\vbs\features\simple.feature"
+strStepDefFilePath = "C:\Users\PC\Desktop\Github\vbs\StepDef.txt"
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 
-
-'Set objRegExp = CreateObject("Vbscript.RegExp")
-'objRegExp.IgnoreCase = True
-'objRegExp.Global = True
-'objRegExp.Pattern = "^\s*(Then|When)"
-'Set myMatches = objRegExp.Execute(" When I know that my parser is working")
-'For Each myMatch In myMatches
-'  Debug.Print myMatch.Value
-'Next
 Set objStepDefFile = objFSO.CreateTextFile(strStepDefFilePath, True)
 Set objFeatureFile = objFSO.OpenTextFile(strFeatureFilePath)
 
 arrFileContent = Split(objFeatureFile.readAll(), vbCrLf)
 
 For Each strLine In arrFileContent
-    strLine = Replace(Trim(strLine), vbTab, "")
+    strLine = removeUnwantedSpaces(strLine)
     If strLine <> "" Then
-        arrWord = Split(strLine, " ", 2, 1)
-        If InStr(1, arrWord(0), "Feature:", 1) <> 0 Then
-            Debug.Print arrWord(1)
-        ElseIf InStr(1, arrWord(0), "Scenario:", 1) <> 0 Then
-        ElseIf InStr(1, arrWord(0), "Background:", 1) <> 0 Then
-        'ElseIf InStr(1, arrWord(0), "Scenario Outline:", 1) <> 0 Then
-        ElseIf InStr(1, arrWord(0), "Given", 1) <> 0 Then
-            Call GenerateFunction(arrWord(1))
-            Debug.Print arrWord(1)
-        ElseIf InStr(1, arrWord(0), "Then", 1) <> 0 Then
-        ElseIf InStr(1, arrWord(0), "When", 1) <> 0 Then
-        ElseIf InStr(1, arrWord(0), "And", 1) <> 0 Then
-        ElseIf InStr(1, arrWord(0), "But", 1) <> 0 Then
+        strTempLine = Replace(strLine, " ", "")
+        If Left(UCase(strTempLine), 8) = "FEATURE:" Then
+            Debug.Print "FEATURE:" & strLine
+        ElseIf Left(UCase(strTempLine), 9) = "SCENARIO:" Then
+            Debug.Print "SCENARIO:" & strLine
+        ElseIf Left(UCase(strTempLine), 11) = "BACKGROUND:" Then
+            Debug.Print "BACKGROUND:" & strLine
+        ElseIf Left(UCase(strTempLine), 17) = "SCENARIO OUTLINE:" Then
+            Debug.Print "SCENARIO OUTLINE:" & strLine
+        ElseIf Left(UCase(strTempLine), 5) = "GIVEN" Then
+            Debug.Print "GIVEN:" & strLine
+        ElseIf Left(UCase(strTempLine), 4) = "THEN" Then
+            Debug.Print "THEN:" & strLine
+        ElseIf Left(UCase(strTempLine), 4) = "WHEN" Then
+            Debug.Print "WHEN:" & strLine
+        ElseIf Left(UCase(strTempLine), 3) = "AND" Then
+            Debug.Print "AND:" & strLine
+        ElseIf Left(UCase(strTempLine), 3) = "BUT" Then
+            Debug.Print "BUT:" & strLine
         End If
        
     End If
@@ -52,4 +49,17 @@ Function GenerateFunction(strLine)
     objStepDefFile.WriteLine (strFuncSignature)
     
 End Function
+
+Function removeUnwantedSpaces(strLine)
+
+    Set objRegExp = CreateObject("Vbscript.RegExp")
+    objRegExp.IgnoreCase = True
+    objRegExp.Global = True
+    objRegExp.Pattern = "\s+"
+    ReplacedText = objRegExp.Replace(strLine, " ")
+    removeUnwantedSpaces = Trim(ReplacedText)
+    
+End Function
+
+
 
