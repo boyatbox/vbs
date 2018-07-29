@@ -1,0 +1,53 @@
+https://automationpanda.com
+
+Title of the Feature file
+Intent of the Feature file
+The names of Scenarios and Feature files must be unique.
+
+Scenario: Test cases
+Scenario Title
+Intent of the Scenario
+Get the system into a particular state
+perform some action
+Examine the new state
+Given, When, Then, But, and And are case sensitive
+
+In a Step Definitions file, And and But are listed as Given/When/Then, the keyword that they appear after. There are no And and But keywords in Step Definitions.
+
+One Feature file normally focuses on one functionality of the application, such as login page, home page, and so on.
+One Scenario refers to one sub-Feature of that functionality, such as the new customer page, delete customer page, and so on.
+
+Backgrounds to Feature files:
+write the repetitive Steps at one place rather than in all Scenarios
+Background is run before each Scenario
+
+Datatable: Sends a large sets of data to a single Step. Associated with one particular Step
+Scenario Outlines: data associated with the whole Scenario.Repeat all the Steps of a Scenario for different sets of data.
+
+fixtures:In this chapter, we will discuss how to get control of what Features to run, and when to run them; for example, we may want to run only one set of Feature files like Sanity, or we may want to take a screenshot after each Scenario. This type of control is called fixtures
+Cucumber allows us to enable fixtures via the concepts of Tags and Hooks
+Tags are used to organize Feature files and Scenarios. You Tag a Scenario by putting a word prefixed with the @ character on the line before the Scenario keyword.
+
+A Feature/Scenario can have multiple Tags; just separate them with spaces or put them on a different line.
+
+Inheritance is when Tags are inherited. If a Feature file has a Tag, then Cucumber will assign that Tag to all Scenarios and all Scenario Outlines in that Feature file.
+
+mvn test -Dcucumber.options="--tags ~@important" will run test cases that do not have the @important Tag associated with them.
+
+run the Scenarios which are Tagged sanity and regression both:
+mvn test -Dcucumber.options="--tags @sanity --tags @regression"
+run scenarios which are Tagged either sanity or regression
+mvn test -Dcucumber.options="--tags @regression,@sanity"
+mvn test -Dcucumber.options="--tags @sanity,@regression --tags @wip"
+
+Hooks
+running some code before or after test Scenarios
+
+@Before: The Before Hook is run before all the Scenarios of a feature file, including the background. If there are multiple Before Hooks, then they will be run in the order they are written.
+@After: The After Hook is run after all Scenarios of a feature file. If there are multiple After Hooks, then they will be run in the order they are written.
+
+The following is the order of execution:
+Before Hook
+Background
+Scenario
+After Hook
