@@ -1,4 +1,16 @@
 
-Function Given_User_enters_"testuser_1"_and_"Test@123"()
+Function Given_user_is_on_Application_landing_page()
+	
+End Function
+
+Function Then_we_verify_user_with_password_phone_exists(arg1, arg2, arg3)
+	
+End Function
+
+Function Then_we_verify_user_with_password_phone_exists(arg1, arg2, arg3)
+	
+End Function
+
+Function Then_we_verify_user_with_password_phone_exists(arg1, arg2, arg3)
 	
 End Function

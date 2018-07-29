@@ -1,0 +1,34 @@
+'The primary keywords are:
+'
+'Feature
+'Example (Scenario and Scenario Outline are synonyms)
+'Given, When, Then, And, But (steps)
+'Background
+'Combinations (Examples is a synonym)
+'There are a few secondary keywords as well:
+'
+'""" (Doc Strings)
+'| (Data Tables)
+'@ (Tags)
+'# (Comments)
+
+Function Process_Feature()
+
+Set objFeature = CreateFeatureObject("C:\Users\PC\Desktop\Github\vbs\features\simple.feature")
+t = objFeature.GetContent()
+MsgBox objFeature.Name
+MsgBox objFeature.Description
+
+End Function
+Function CreateFeatureObject(strFilePath)
+    
+    Set objFeature = New Feature
+    objFeature.LoadFeature (strFilePath)
+    Set CreateFeatureObject = objFeature
+    
+End Function
+
+Function Process_Scenario()
+
+
+End Function

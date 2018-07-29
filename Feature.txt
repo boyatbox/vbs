@@ -1,0 +1,108 @@
+Private strFeatureFilePath
+Private arrFileContent()
+
+Private Sub Class_Initialize()
+    
+End Sub
+
+Private Sub Class_Terminate()
+
+End Sub
+
+
+Public Function Load(strFilePath)
+
+    strFeatureFilePath = strFilePath
+    Call LoadFeature
+    Set Load = New Feature
+    
+End Function
+
+Public Property Get Name()
+
+    strName = GetLineText_StartWith("Feature:")
+    Name = Trim(Split(strName, ":", 2, vbTextCompare)(1))
+    
+End Property
+
+Public Property Get Description()
+
+    'The free format description for Feature ends when you start a line with the keyword Scenario or Scenario Outline.
+    Dim arrDescription()
+    
+    i = 0
+    For Each strLine In arrFileContent
+        strTempLine = Replace(strLine, " ", "")
+        If Left(strTempLine, 8) = "Feature:" Then
+            i = i + 1
+            Exit For
+        End If
+    Next
+    
+    If i > 0 Then
+        j = 0
+        For Each strLine In arrFileContent
+            If Left(strTempLine, 9) = "Scenario:" Or Left(strTempLine, 17) = "Scenario Outline:" Then
+                j = j + 1
+                Exit For
+            End If
+        Next
+    End If
+    
+    
+    Description = "desc"
+    
+End Property
+
+Public Function GetContent()
+        GetContent = arrFileContent
+End Function
+
+Private Function GetLineNumber_StartWith(strFindTxt)
+    For Each strLine In arrFileContent
+        strTempLine = Replace(strLine, " ", "")
+        If Left(strTempLine, 8) = strFindTxt Then
+            GetLineText_StartWith = strLine
+            Exit For
+        End If
+    Next
+End Function
+
+Private Function GetLineText_StartWith(strFindTxt)
+
+    For Each strLine In arrFileContent
+        strTempLine = Replace(strLine, " ", "")
+        If Left(strTempLine, 8) = strFindTxt Then
+            GetLineText_StartWith = strLine
+            Exit For
+        End If
+    Next
+    
+End Function
+
+Public Function LoadFeature(strFilePath)
+
+    strFeatureFilePath = strFilePath
+    Set objFSO = CreateObject("Scripting.FileSystemObject")
+    Set objFeatureFile = objFSO.OpenTextFile(strFeatureFilePath)
+    arrFile = Split(objFeatureFile.readAll(), vbNewLine)
+    
+    Set objRegExp = CreateObject("Vbscript.RegExp")
+    objRegExp.IgnoreCase = True
+    objRegExp.Global = True
+    objRegExp.Pattern = "\s+"
+    
+    Dim arrContent()
+    i = 0
+    For Each strLine In arrFile
+        strFormattedLine = Trim(objRegExp.Replace(strLine, " "))
+        If strFormattedLine <> "" And Left(strFormattedLine, 1) <> "#" Then
+            ReDim Preserve arrContent(i)
+            arrContent(i) = strFormattedLine
+            i = i + 1
+        End If
+    Next
+    
+    arrFileContent = arrContent
+    
+End Function

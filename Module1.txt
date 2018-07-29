@@ -1,0 +1,125 @@
+'Step Arguments:Doc Strings,Data Tables
+'Scenario Outline: A Scenario Outline must contain an Examples section.
+
+Dim strFeature
+Dim strFeatureDesc
+Dim strScenario
+Dim strScenarioDesc
+Dim strStep
+Dim objStepDefFile
+Sub RegExMatch()
+
+strFeatureFilePath = "C:\Users\PC\Desktop\Github\vbs\features\simple.feature"
+strStepDefFilePath = "C:\Users\PC\Desktop\Github\vbs\StepDef.txt"
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+
+Set objStepDefFile = objFSO.CreateTextFile(strStepDefFilePath, True)
+Set objFeatureFile = objFSO.OpenTextFile(strFeatureFilePath)
+
+arrFileContent = Split(objFeatureFile.readAll(), vbCrLf)
+
+For Each strLine In arrFileContent
+    strLine = RemoveMultipleSpaces(strLine)
+    If strLine <> "" Then
+        strTempLine = Replace(strLine, " ", "")
+        If Left(UCase(strTempLine), 8) = "FEATURE:" Then
+            Debug.Print "FEATURE:" & strLine
+        ElseIf Left(UCase(strTempLine), 9) = "SCENARIO:" Then
+            Debug.Print "SCENARIO:" & strLine
+        ElseIf Left(UCase(strTempLine), 11) = "BACKGROUND:" Then
+            Debug.Print "BACKGROUND:" & strLine
+        ElseIf Left(UCase(strTempLine), 17) = "SCENARIO OUTLINE:" Then
+            Debug.Print "SCENARIO OUTLINE:" & strLine
+        ElseIf Left(UCase(strTempLine), 5) = "GIVEN" Then
+            Debug.Print "GIVEN:" & strLine
+            Call GenerateFunction(strLine)
+        ElseIf Left(UCase(strTempLine), 4) = "THEN" Then
+            Call GenerateFunction(strLine)
+            Debug.Print "THEN:" & strLine
+        ElseIf Left(UCase(strTempLine), 4) = "WHEN" Then
+            Debug.Print "WHEN:" & strLine
+        ElseIf Left(UCase(strTempLine), 3) = "AND" Then
+            Debug.Print "AND:" & strLine
+        ElseIf Left(UCase(strTempLine), 3) = "BUT" Then
+            Debug.Print "BUT:" & strLine
+        End If
+        
+    End If
+Next
+
+objStepDefFile.Close
+
+End Sub
+
+Function GenerateFunction(strLine)
+    
+    strArgs = CaptureStepArgument(strLine)
+    strFnName = GenerateFunctionName(strLine)
+    'strLine = Replace(strLine, " ", "_")
+    strFuncSignature = "Function " & strFnName & "(" & strArgs & ")" & vbNewLine & vbTab & "" & vbNewLine & "End Function"
+    objStepDefFile.WriteLine "'" & strFeature
+    objStepDefFile.WriteLine strScenario
+    objStepDefFile.WriteLine strStepName
+    objStepDefFile.WriteLine
+    objStepDefFile.WriteLine (strFuncSignature)
+    
+End Function
+
+Function GenerateFunctionName(strLine)
+
+    Set objRegExp = CreateObject("Vbscript.RegExp")
+    objRegExp.IgnoreCase = True
+    objRegExp.Global = True
+    
+    'remove arguments
+    objRegExp.Pattern = "\"".*?\"""
+    strFnName = objRegExp.Replace(strLine, "")
+    
+    'remove special characters
+    objRegExp.Pattern = "[^A-Za-z\s]"
+    strFnName = objRegExp.Replace(strFnName, "")
+    
+    'remove multiple space chars
+    strFnName = RemoveMultipleSpaces(Trim(strFnName))
+    
+    'replace space
+    strFnName = Replace(strFnName, " ", "_")
+    GenerateFunctionName = strFnName
+    
+End Function
+
+Function CaptureStepArgument(strLine)
+
+    Set objRegExp = CreateObject("Vbscript.RegExp")
+    objRegExp.IgnoreCase = True
+    objRegExp.Global = True
+    objRegExp.Pattern = "\"".*?\"""  'Regular exp:  \".*?\"
+    Set myMatches = objRegExp.Execute(strLine)
+    
+    If myMatches.Count > 0 Then
+        i = 1
+        For Each myMatch In myMatches
+            'strParam = strParam & myMatch.Value & ","
+            strArgs = strArgs & "arg" & i & ", "
+            i = i + 1
+        Next
+        If Right(strArgs, 2) = ", " Then
+            strArgs = Left(strArgs, Len(strArgs) - 2)
+        End If
+    End If
+    
+    CaptureStepArgument = strArgs
+
+End Function
+
+Function RemoveMultipleSpaces(strLine)
+
+    Set objRegExp = CreateObject("Vbscript.RegExp")
+    objRegExp.IgnoreCase = True
+    objRegExp.Global = True
+    objRegExp.Pattern = "\s+"
+    ReplacedText = objRegExp.Replace(strLine, " ")
+    RemoveMultipleSpaces = Trim(ReplacedText)
+    
+End Function
+

@@ -2,6 +2,7 @@ Set objFeature = New Feature
 objFeature.CustomerName="zzz"
 msgbox objFeature.CustomerName
 msgbox objFeature.Name
+
 Class Feature
 
 	private Name
@@ -18,3 +19,8 @@ Class Feature
 	end function
 	
 End Class
+
+
+class scenario
+
+end class
