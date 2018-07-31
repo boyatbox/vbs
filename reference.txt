@@ -2,3 +2,4 @@ https://www.nsbasic.com/ce/info/technotes/TN29.htm
 https://snook.ca/archives/active_server_pages/selfreferencing_in_vbscript
 https://gist.github.com/mlhaufe/1034244
 https://community.smartbear.com/t5/TestComplete-Desktop-Testing/Iterate-Properties-of-a-VBScript-Class-Object/td-p/110010
+https://medium.com/agile-vision/cucumber-bdd-part-2-creating-a-sample-java-project-with-cucumber-testng-and-maven-127a1053c180
